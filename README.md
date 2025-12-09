@@ -48,9 +48,7 @@
 
 ### 方式三：通过 Docker 部署（推荐）
 
-1. 执行 `docker build -t short-url .` 打包镜像；
+1. 执行 `docker compose up -d` 打包镜像；
 
-2. 执行 `docker run -d -p3001:3001 short-url` 启动容器；
-
-3. 访问 [http://localhost:3001](http://localhost:3001) 即可使用；
+2. 访问 [http://localhost:3001](http://localhost:3001) 即可使用；
 
