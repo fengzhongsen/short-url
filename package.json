@@ -12,13 +12,16 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "file-saver": "^2.0.5",
+    "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.0",
     "qrcode": "^1.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
+    "react-router-dom": "^7.10.1",
     "react-scripts": "5.0.1",
     "redis": "^4.6.4",
+    "bcryptjs": "^2.4.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
