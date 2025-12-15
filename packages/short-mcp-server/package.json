@@ -1,9 +1,33 @@
 {
   "name": "short-mcp-server",
   "version": "0.1.0",
-  "private": true,
+  "description": "MCP Server for Short URL service integration with AI assistants",
+  "main": "index.js",
+  "bin": {
+    "short-mcp-server": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "README.md"
+  ],
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "short-url",
+    "ai",
+    "claude"
+  ],
+  "author": "fengzhongsen",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fengzhongsen/short-url.git",
+    "directory": "packages/short-mcp-server"
+  },
+  "type": "module",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^0.6.0"
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "axios": "^1.7.9"
   },
   "scripts": {
     "start": "node index.js"

@@ -1,0 +1,43 @@
+# Short URL MCP Server
+
+This is the Model Context Protocol (MCP) server for the [Short URL](https://github.com/fengzhongsen/short-url) project. It allows AI assistants (like Claude Desktop) to interact with your Short URL service to generate short links directly from the chat interface.
+
+## Installation
+
+You can run this server directly using `npx` or install it globally.
+
+### Prerequisites
+
+- A running instance of the Short URL service (or use the public one if available/configured).
+- An API Key from the Short URL service.
+
+## Usage with Claude Desktop
+
+Add the following configuration to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "short-url": {
+      "command": "npx",
+      "args": ["-y", "short-mcp-server"],
+      "env": {
+        "API_URL": "YOUR_API_URL",
+        "API_KEY": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
+```
+
+Replace `YOUR_API_KEY_HERE` with your actual API key generated from the Short URL service dashboard.
+If you are hosting the service yourself, replace `YOUR_API_URL` with your own API endpoint (e.g., `http://localhost:3001/api/urls`).
+
+## Environment Variables
+
+- `API_URL`: The API endpoint for creating short URLs (default: `http://localhost:3001/api/urls`).
+- `API_KEY`: (Required) Your API Key for authentication.
+
+## License
+
+MIT

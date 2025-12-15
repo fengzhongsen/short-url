@@ -5,12 +5,10 @@
  * 用于连接 Claude Desktop 等 AI 客户端与短链服务
  */
 
-const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
-const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
-const {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} = require('@modelcontextprotocol/sdk/types.js');
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
+import axios from 'axios';
 
 // 从环境变量获取配置
 const API_URL = process.env.API_URL || 'http://localhost:3001/api/urls';
@@ -63,43 +61,43 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     try {
       // 调用后端 API
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${API_KEY}`,
-        },
-        body: JSON.stringify({ url }),
-      });
+      const response = await axios.post(
+        API_URL,
+        { originUrl: url },
+        {
+          headers: {
+            Authorization: `Bearer ${API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-      const data = await response.json();
-
-      if (!response.ok) {
+      if (response.data && response.data.code === 0) {
         return {
           content: [
             {
               type: 'text',
-              text: `Error: ${data.error || 'Failed to shorten URL'}`,
+              text: `短链接生成成功！\n短链接: ${response.data.data.shortUrl}\n原始链接: ${response.data.data.originUrl}`,
+            },
+          ],
+        };
+      } else {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `生成失败: ${response.data.msg || '未知错误'}`,
             },
           ],
           isError: true,
         };
       }
-
-      return {
-        content: [
-          {
-            type: 'text',
-            text: `短链接生成成功！\n短链: ${data.shortUrl}\n原链: ${data.originUrl}`,
-          },
-        ],
-      };
     } catch (error) {
       return {
         content: [
           {
             type: 'text',
-            text: `Network Error: ${error.message}`,
+            text: `请求出错: ${error.message}`,
           },
         ],
         isError: true,
