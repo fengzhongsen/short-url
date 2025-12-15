@@ -3,7 +3,7 @@ import QRCode from 'qrcode';
 import copy from 'copy-to-clipboard';
 import { saveAs } from 'file-saver';
 import { Table, Button, Space, Popconfirm, message, Tooltip, Typography, Card } from 'antd';
-import { CopyOutlined, DeleteOutlined, QrcodeOutlined, LinkOutlined } from '@ant-design/icons';
+import { CopyOutlined, DeleteOutlined, DownloadOutlined, LinkOutlined } from '@ant-design/icons';
 import request from '../utils/request';
 import { getOrigin } from '../utils/origin';
 
@@ -110,8 +110,9 @@ const UrlList = ({ refresh, onDelete }) => {
           <Tooltip title="下载二维码">
             <Button
               type="text"
-              icon={<QrcodeOutlined />}
+              icon={<DownloadOutlined />}
               onClick={() => handleDownloadQR(record.code)}
+              className="url-list-icon-teal"
             />
           </Tooltip>
           <Popconfirm

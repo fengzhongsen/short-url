@@ -10,7 +10,8 @@ const app = express();
 morgan.token('body', (req) => JSON.stringify(req.body));
 
 // Middleware
-app.use(express.static('build'));
+// 指向 short-client 的 build 目录
+app.use(express.static(path.join(__dirname, '../short-client/build')));
 app.use(express.json());
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
@@ -30,7 +31,7 @@ app.get('/:code', async (request, response, next) => {
 
 // 处理所有其他请求，返回前端 index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../build', 'index.html'));
+  res.sendFile(path.join(__dirname, '../short-client/build', 'index.html'));
 });
 
 module.exports = app;

@@ -64,10 +64,10 @@ const Header = ({ showLogout = true }) => {
       {showLogout && (
         <div className="header-logout">
           <Space>
-            <Button icon={<ApiOutlined />} onClick={() => setIsModalOpen(true)}>
+            <Button type="text" icon={<ApiOutlined />} onClick={() => setIsModalOpen(true)}>
               API & MCP
             </Button>
-            <Button type="text" danger icon={<LogoutOutlined />} onClick={handleLogout}>
+            <Button type="text" icon={<LogoutOutlined />} onClick={handleLogout}>
               退出登录
             </Button>
           </Space>

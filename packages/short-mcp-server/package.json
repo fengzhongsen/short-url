@@ -1,0 +1,11 @@
+{
+  "name": "short-mcp-server",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}

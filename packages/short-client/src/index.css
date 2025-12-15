@@ -20,6 +20,7 @@ body {
     z-index: 1000;
 }
 
+
 .fixed-footer {
     flex-shrink: 0;
     background: #f0fdfa;
