@@ -1,0 +1,202 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+    /* Ant Design default background color */
+}
+
+/* Layout */
+.app-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background: #f0fdfa !important;
+}
+
+.fixed-header {
+    flex-shrink: 0;
+    background: #f0fdfa;
+    z-index: 1000;
+}
+
+.fixed-footer {
+    flex-shrink: 0;
+    background: #f0fdfa;
+    z-index: 1000;
+}
+
+.scrollable-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.app-content {
+    padding: 24px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.app-body-wrapper {
+    width: 100%;
+    max-width: 1152px;
+}
+
+/* Header */
+.header-container {
+    position: relative;
+    width: 100%;
+    padding: 48px 0;
+    text-align: center;
+}
+
+.header-logout {
+    position: absolute;
+    right: 24px;
+    top: 48px;
+    transform: none;
+}
+
+.header-title {
+    margin: 0 0 16px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-logo {
+    width: 48px;
+    height: 48px;
+    margin-right: 16px;
+}
+
+.header-subtitle {
+    font-size: 20px;
+}
+
+/* Footer */
+.footer-container {
+    text-align: center;
+    padding: 24px 0;
+}
+
+.footer-heart {
+    color: #EF3E36;
+    margin: 0 4px;
+}
+
+/* Auth (Login/Register) */
+.auth-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    width: 100%;
+    background: #f0fdfa;
+    padding-bottom: 15vh;
+}
+
+.auth-card {
+    width: 400px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.auth-link {
+    text-align: center;
+}
+
+/* Search */
+.search-card {
+    margin-bottom: 32px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+.search-compact {
+    width: 100%;
+}
+
+.search-icon {
+    color: rgba(0, 0, 0, .25);
+}
+
+/* Entity */
+.entity-card {
+    margin-bottom: 32px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+.entity-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.entity-qrcode-wrapper {
+    flex-shrink: 0;
+}
+
+.entity-qrcode {
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+}
+
+.entity-content {
+    flex: 1;
+    width: 100%;
+}
+
+.entity-actions {
+    margin-top: 24px;
+}
+
+.entity-link {
+    font-size: 18px !important;
+}
+
+.entity-descriptions .ant-descriptions-item-label {
+    width: 100px;
+    font-weight: bold;
+}
+
+/* UrlList */
+.url-list-container {
+    margin-top: 32px;
+    margin-bottom: 48px;
+}
+
+.url-list-title {
+    margin-bottom: 24px !important;
+}
+
+.url-list-count {
+    font-size: 16px;
+}
+
+.url-list-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+.url-list-card .ant-card-body {
+    padding: 0 !important;
+}
+
+.url-list-link-secondary {
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.url-list-icon-teal {
+    color: #0d9488;
+}
+
+/* Error */
+.error-alert {
+    margin-top: 16px;
+}

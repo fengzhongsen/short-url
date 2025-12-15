@@ -1,0 +1,23 @@
+{
+  "short_name": "极简短链",
+  "name": "极简短链 - 简单易用的短链接生成工具",
+  "description": "极简短链是一个简单易用的短链接生成工具，链接永久有效，支持自定义短链。",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#14b8a6",
+  "background_color": "#14b8a6",
+  "orientation": "portrait"
+}
