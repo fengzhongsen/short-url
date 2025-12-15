@@ -21,7 +21,13 @@ const authMiddleware = async (req, res, next) => {
     }
 
     // 确认 token 在 Redis 中存在（支持服务端撤销/过期控制）
-    const owner = await redis.get(`short-url:token:${token}`);
+    let owner = await redis.get(`short-url:token:${token}`);
+
+    // 如果普通 token 不存在，尝试查找 API Key
+    if (!owner) {
+      owner = await redis.get(`short-url:apikey:${token}`);
+    }
+
     if (!owner) {
       return res.status(401).json({ error: 'Token 无效或已过期' });
     }

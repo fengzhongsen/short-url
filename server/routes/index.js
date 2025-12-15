@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const { redis, redisKey } = require('../redis');
 const authMiddleware = require('../middleware/auth');
 const { decryptPassword, validateCredentials } = require('../utils/pwd');
-const { generateToken } = require('../utils/jwt');
+const { generateToken, generatePermanentToken } = require('../utils/jwt');
 const { generateUniqueCode } = require('../utils/short');
 
 const USER_URL_LIMIT = process.env.USER_URL_LIMIT || 10;
@@ -87,6 +87,26 @@ router.post('/api/login', async (req, res) => {
   } catch (err) {
     console.error('Login error', err);
     res.status(500).json({ error: '服务器错误' });
+  }
+});
+
+// 生成永久 API Key (需要登录)
+router.post('/api/apikey', authMiddleware, async (req, res) => {
+  try {
+    const { username } = req.user;
+    // 生成一个永久有效的 Token，并在 payload 中标记为 apiKey
+    const token = generatePermanentToken({ username, type: 'apiKey' });
+
+    // 存入 Redis，与普通 token 区分开
+    await redis.set(`short-url:apikey:${token}`, username);
+
+    // 将 API Key 存入用户的集合中，方便后续管理（如查询、撤销）
+    await redis.sAdd(`short-url:user:${username}:apikeys`, token);
+
+    res.json({ token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: '生成 API Key 失败' });
   }
 });
 

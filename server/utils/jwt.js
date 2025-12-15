@@ -15,6 +15,15 @@ const generateToken = (payload) => {
 };
 
 /**
+ * 生成永久有效的 JWT Token
+ * @param {Object} payload 载荷
+ * @returns {string} Token
+ */
+const generatePermanentToken = (payload) => {
+  return jwt.sign(payload, jwtSecret);
+};
+
+/**
  * 验证 JWT Token
  * @param {string} token
  * @returns {Object} payload
@@ -25,5 +34,6 @@ const verifyToken = (token) => {
 
 module.exports = {
   generateToken,
+  generatePermanentToken,
   verifyToken,
 };

@@ -81,6 +81,12 @@ const deleteUrl = async (code) => {
   return res.data;
 };
 
-const request = { shortUrl, login, me, register, getUrlList, deleteUrl, logout };
+// 获取 API Key
+const getApiKey = async () => {
+  const res = await api.post('/api/apikey');
+  return res.data;
+};
+
+const request = { shortUrl, login, me, register, getUrlList, deleteUrl, logout, getApiKey };
 
 export default request;
