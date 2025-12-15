@@ -1,22 +1,42 @@
-# 极简短链 (Short URL)
+<p align="center">
+  <a href="https://short.ifelse.site/">
+    <img src="public/favicon.svg" alt="Logo" width="100" height="100">
+  </a>
 
-将长链接转为短链接的小工具，完全开源、免费、支持注册登录，可私有化部署，短链接可永久有效。起初通过Fork [onee-io/short-url](https://github.com/onee-io/short-url) 进行开发，但是由于定位不同进行了全面重构，已无法再合入原项目，故而新建仓库。
-> * UI方面基于Antd6进行了全面重构
-> * 功能方面增加了注册/登录/登出等能力
-> * 后续计划增加MCP服务
-> * 建立了新的品牌（Logo+主题）
+  <h1 align="center">极简短链</h1>
+  <p align="center">
+    将长链接转为短链接的小工具，完全开源、免费、支持注册登录，可私有化部署，短链接可永久有效。
+  </p>
+  <p align="center">
+    <img src="https://img.shields.io/github/contributors/fengzhongsen/short-url.svg?style=for-the-badge" alt="Contributors">
+    <img src="https://img.shields.io/github/forks/fengzhongsen/short-url.svg?style=for-the-badge" alt="Forks">
+    <img src="https://img.shields.io/github/stars/fengzhongsen/short-url.svg?style=for-the-badge" alt="Stargazers">
+    <img src="https://img.shields.io/github/issues/fengzhongsen/short-url.svg?style=for-the-badge" alt="Issues">
+    <img src="https://img.shields.io/github/license/fengzhongsen/short-url.svg?style=for-the-badge" alt="MIT License">
+    <img src="https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555" alt="LinkedIn">
+  </p>
+  <p align="center">
+    <a href="https://short.ifelse.site">体验地址</a>
+    ·
+    <a href="https://github.com/fengzhongsen/short-url/issues">报告Bug</a>
+    ·
+    <a href="https://github.com/fengzhongsen/short-url/issues">提出新特性</a>
+  </p>
+</p>
 
-体验地址 👉 [极简短链 —— 简单易用的短链接生成工具，链接永久有效！](https://short.ifelse.site)
+## 申明
 
-申明：该站不承诺提供稳定服务，仅为每位体验者10个短链体验额度
+该项目起初 Fork 自 [onee-io/short-url](https://github.com/onee-io/short-url) ，在工程方面进行了全面重构，UI 基于 Antd6 重写，同时增加了注册/登录/登出等能力，短链生成算法也采用了业界最佳实践，后续计划增加 MCP 服务，已无法再合入原项目，故而新建仓库。
 
 ## 效果演示
 
-<img src="docs/main.png" width="400" />
+<img src="docs/main.png" />
 <details>
 <summary>登录注册页面展示</summary>
-<img src="docs/register.png" width="400" />
-<img src="docs/login.png" width="400" />
+<strong>登录</strong>
+<img src="docs/login.png" />
+<strong>注册</strong>
+<img src="docs/register.png" />
 </details>
 
 ## 环境依赖
