@@ -11,7 +11,7 @@ import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprot
 import axios from 'axios';
 
 // 从环境变量获取配置
-const API_URL = process.env.API_URL || 'http://localhost:3001/api/urls';
+const API_ORIGIN = process.env.API_ORIGIN || 'http://localhost:3001';
 const API_KEY = process.env.API_KEY;
 
 if (!API_KEY) {
@@ -62,7 +62,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     try {
       // 调用后端 API
       const response = await axios.post(
-        API_URL,
+        `${API_ORIGIN}/api/urls`,
         { url },
         {
           headers: {
@@ -72,12 +72,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
       );
 
-      if (response.data && response.data.code === 0) {
+      if (response.data) {
         return {
           content: [
             {
               type: 'text',
-              text: `短链接生成成功！\n短链接: ${response.data.data.shortUrl}\n原始链接: ${response.data.data.originUrl}`,
+              text: `短链接生成成功！\n短链接: ${API_ORIGIN}/${response.data.code}\n原始链接: ${response.data.url}`,
             },
           ],
         };
