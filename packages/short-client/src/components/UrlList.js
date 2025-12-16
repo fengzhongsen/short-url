@@ -27,7 +27,7 @@ const UrlList = ({ refresh, onDelete }) => {
       setTotal(data.total || 0);
     } catch (error) {
       console.error('获取短链列表失败:', error);
-      messageApi.error('获取列表失败');
+      messageApi.error(error.message || '获取列表失败');
     } finally {
       setLoading(false);
     }
@@ -49,7 +49,7 @@ const UrlList = ({ refresh, onDelete }) => {
         fetchUrls();
       }
     } catch (error) {
-      messageApi.error(error.response?.data?.error || '删除失败');
+      messageApi.error(error.message || '删除失败');
     }
   };
 

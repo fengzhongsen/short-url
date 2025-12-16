@@ -37,11 +37,9 @@ function Login() {
         localStorage.setItem('token', data.token);
         message.success('登录成功');
         navigate('/');
-      } else {
-        setError(data.error || '登录失败');
       }
     } catch (err) {
-      setError('网络错误');
+      setError(err.message || '登录失败');
     } finally {
       setLoading(false);
     }

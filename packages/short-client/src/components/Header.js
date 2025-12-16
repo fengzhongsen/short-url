@@ -31,7 +31,7 @@ const Header = ({ showLogout = true }) => {
       setApiKey(res.token);
       message.success('API Key 生成成功');
     } catch (error) {
-      message.error('生成失败');
+      message.error(error.message || '生成失败');
     } finally {
       setLoading(false);
     }

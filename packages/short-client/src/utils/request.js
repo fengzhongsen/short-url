@@ -17,7 +17,23 @@ api.interceptors.request.use((config) => {
 
 // 响应拦截器：处理 401 错误，自动跳转登录
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const res = response.data;
+    // 如果是二进制数据（如文件下载），直接返回
+    if (response.config.responseType === 'blob') {
+      return res;
+    }
+
+    if (res.code === 0) {
+      return res.data; // Unwrap data
+    } else {
+      // 业务错误，抛出异常
+      const error = new Error(res.msg || 'Error');
+      error.response = response; // Attach response for compatibility
+      error.data = res; // Attach full response data
+      return Promise.reject(error);
+    }
+  },
   (error) => {
     if (error.response && error.response.status === 401) {
       // token 无效或过期，清除并跳转登录
@@ -29,32 +45,29 @@ api.interceptors.response.use(
 );
 
 // 注册
-const register = async ({ username, password }) => {
-  const res = await api.post('/api/register', {
+const register = ({ username, password }) => {
+  return api.post('/api/register', {
     username,
     password: encrypt(password),
   });
-  return res.data;
 };
 
 // 登录
-const login = async ({ username, password }) => {
-  const res = await api.post('/api/login', {
+const login = ({ username, password }) => {
+  return api.post('/api/login', {
     username,
     password: encrypt(password),
   });
-  return res.data;
 };
 
 // 退出登录
-const logout = async () => {
-  await api.post('/api/logout');
+const logout = () => {
+  return api.post('/api/logout');
 };
 
 // 验证当前 token 是否有效，并返回用户信息
-const me = async () => {
-  const res = await api.get('/api/me');
-  return res.data;
+const me = () => {
+  return api.get('/api/me');
 };
 
 /**
@@ -62,29 +75,25 @@ const me = async () => {
  * @param {string} url 原始链接
  * @returns 短链接
  */
-const shortUrl = async (url) => {
-  const res = await api.post('/api/urls', { url });
-  return res.data;
+const shortUrl = (url) => {
+  return api.post('/api/urls', { url });
 };
 
 // 获取当前用户的短链列表（分页）
-const getUrlList = async (page = 1, pageSize = 10) => {
-  const res = await api.get('/api/urls', {
+const getUrlList = (page = 1, pageSize = 10) => {
+  return api.get('/api/urls', {
     params: { page, pageSize },
   });
-  return res.data;
 };
 
 // 删除短链
-const deleteUrl = async (code) => {
-  const res = await api.delete(`/api/urls/${code}`);
-  return res.data;
+const deleteUrl = (code) => {
+  return api.delete(`/api/urls/${code}`);
 };
 
 // 获取 API Key
-const getApiKey = async () => {
-  const res = await api.post('/api/apikey');
-  return res.data;
+const getApiKey = () => {
+  return api.post('/api/apikey');
 };
 
 const request = { shortUrl, login, me, register, getUrlList, deleteUrl, logout, getApiKey };

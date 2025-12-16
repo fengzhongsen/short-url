@@ -72,12 +72,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
       );
 
-      if (response.data) {
+      const res = response.data;
+      if (res && res.code === 0 && res.data) {
         return {
           content: [
             {
               type: 'text',
-              text: `短链接生成成功！\n短链接: ${API_ORIGIN}/${response.data.code}\n原始链接: ${response.data.url}`,
+              text: `短链接生成成功！\n短链接: ${API_ORIGIN}/${res.data.code}\n原始链接: ${res.data.url}`,
             },
           ],
         };
@@ -86,7 +87,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           content: [
             {
               type: 'text',
-              text: `生成失败: ${response.data.msg || '未知错误'}`,
+              text: `生成失败: ${res.msg || '未知错误'}`,
             },
           ],
           isError: true,

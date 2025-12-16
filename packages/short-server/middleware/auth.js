@@ -1,5 +1,7 @@
 const { redis } = require('../redis');
 const { verifyToken } = require('../utils/jwt');
+const response = require('../utils/response');
+const { ErrorCode, HttpStatus } = response;
 
 /**
  * 鉴权中间件：校验 Authorization: Bearer <token>
@@ -9,7 +11,7 @@ const authMiddleware = async (req, res, next) => {
     const auth = req.headers.authorization || '';
     const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
     if (!token) {
-      return res.status(401).json({ error: '未提供 token' });
+      return response.error(res, ErrorCode.TOKEN_INVALID, '未提供 token', HttpStatus.UNAUTHORIZED);
     }
 
     // 校验 JWT
@@ -17,7 +19,7 @@ const authMiddleware = async (req, res, next) => {
     try {
       payload = verifyToken(token);
     } catch (err) {
-      return res.status(401).json({ error: '无效 token' });
+      return response.error(res, ErrorCode.TOKEN_INVALID, '无效 token', HttpStatus.UNAUTHORIZED);
     }
 
     // 确认 token 在 Redis 中存在（支持服务端撤销/过期控制）
@@ -29,14 +31,24 @@ const authMiddleware = async (req, res, next) => {
     }
 
     if (!owner) {
-      return res.status(401).json({ error: 'Token 无效或已过期' });
+      return response.error(
+        res,
+        ErrorCode.TOKEN_EXPIRED,
+        'Token 无效或已过期',
+        HttpStatus.UNAUTHORIZED
+      );
     }
 
     req.user = payload;
     next();
   } catch (err) {
     console.error('authMiddleware error', err);
-    return res.status(500).json({ error: '服务器错误' });
+    return response.error(
+      res,
+      ErrorCode.SERVER_ERROR,
+      '服务器错误',
+      HttpStatus.INTERNAL_SERVER_ERROR
+    );
   }
 };
 

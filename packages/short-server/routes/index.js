@@ -6,6 +6,8 @@ const authMiddleware = require('../middleware/auth');
 const { decryptPassword, validateCredentials } = require('../utils/pwd');
 const { generateToken, generatePermanentToken } = require('../utils/jwt');
 const { generateUniqueCode } = require('../utils/short');
+const response = require('../utils/response');
+const { ErrorCode, HttpStatus } = response;
 
 const USER_URL_LIMIT = process.env.USER_URL_LIMIT || 10;
 
@@ -15,7 +17,8 @@ const USER_URL_LIMIT = process.env.USER_URL_LIMIT || 10;
 router.post('/api/register', async (req, res) => {
   try {
     const { username, password: encryptedPassword } = req.body || {};
-    if (!username || !encryptedPassword) return res.status(400).json({ error: '缺少用户名或密码' });
+    if (!username || !encryptedPassword)
+      return response.error(res, ErrorCode.PARAM_ERROR, '缺少用户名或密码');
 
     // 只解密密码，用户名明文传输
     let password;
@@ -23,19 +26,19 @@ router.post('/api/register', async (req, res) => {
       password = decryptPassword(encryptedPassword);
     } catch (err) {
       console.error('Decrypt error:', err);
-      return res.status(400).json({ error: '密码格式错误' });
+      return response.error(res, ErrorCode.PARAM_ERROR, '密码格式错误');
     }
 
     // 验证用户名和密码格式
     const validation = validateCredentials(username, password);
     if (!validation.valid) {
-      return res.status(400).json({ error: validation.error });
+      return response.error(res, ErrorCode.PARAM_ERROR, validation.error);
     }
 
     // 检查用户是否已存在
     const exists = await redis.hExists(redisKey.users, username);
     if (exists) {
-      return res.status(400).json({ error: '用户名已存在' });
+      return response.error(res, ErrorCode.USER_EXIST, '用户名已存在');
     }
 
     // 使用 bcrypt hash 密码
@@ -47,10 +50,10 @@ router.post('/api/register', async (req, res) => {
     // 初始化用户链接限制
     await redis.set(`short-url:user:${username}:limit`, USER_URL_LIMIT);
 
-    res.json({ message: '注册成功' });
+    response.success(res, null, '注册成功');
   } catch (err) {
     console.error('Register error', err);
-    res.status(500).json({ error: '服务器错误' });
+    response.error(res, ErrorCode.SERVER_ERROR, '服务器错误', HttpStatus.INTERNAL_SERVER_ERROR);
   }
 });
 
@@ -58,7 +61,8 @@ router.post('/api/register', async (req, res) => {
 router.post('/api/login', async (req, res) => {
   try {
     const { username, password: encryptedPassword } = req.body || {};
-    if (!username || !encryptedPassword) return res.status(400).json({ error: '缺少用户名或密码' });
+    if (!username || !encryptedPassword)
+      return response.error(res, ErrorCode.PARAM_ERROR, '缺少用户名或密码');
 
     // 只解密密码，用户名明文传输
     let password;
@@ -66,16 +70,16 @@ router.post('/api/login', async (req, res) => {
       password = decryptPassword(encryptedPassword);
     } catch (err) {
       console.error('Decrypt error:', err);
-      return res.status(400).json({ error: '密码格式错误' });
+      return response.error(res, ErrorCode.PARAM_ERROR, '密码格式错误');
     }
 
     // 从 Redis 获取用户密码
     const stored = await redis.hGet(redisKey.users, username);
-    if (!stored) return res.status(401).json({ error: '用户名或密码错误' });
+    if (!stored) return response.error(res, ErrorCode.PASSWORD_ERROR, '用户名或密码错误');
 
     // 验证密码
     const match = await bcrypt.compare(password, stored);
-    if (!match) return res.status(401).json({ error: '用户名或密码错误' });
+    if (!match) return response.error(res, ErrorCode.PASSWORD_ERROR, '用户名或密码错误');
 
     const token = generateToken({ username });
 
@@ -83,10 +87,10 @@ router.post('/api/login', async (req, res) => {
     const ttl = 2 * 60 * 60; // 2 hours
     await redis.set(`short-url:token:${token}`, username, { EX: ttl });
 
-    res.json({ token });
+    response.success(res, { token });
   } catch (err) {
     console.error('Login error', err);
-    res.status(500).json({ error: '服务器错误' });
+    response.error(res, ErrorCode.SERVER_ERROR, '服务器错误', HttpStatus.INTERNAL_SERVER_ERROR);
   }
 });
 
@@ -103,10 +107,15 @@ router.post('/api/apikey', authMiddleware, async (req, res) => {
     // 将 API Key 存入用户的集合中，方便后续管理（如查询、撤销）
     await redis.sAdd(`short-url:user:${username}:apikeys`, token);
 
-    res.json({ token });
+    response.success(res, { token });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: '生成 API Key 失败' });
+    response.error(
+      res,
+      ErrorCode.SERVER_ERROR,
+      '生成 API Key 失败',
+      HttpStatus.INTERNAL_SERVER_ERROR
+    );
   }
 });
 
@@ -119,33 +128,33 @@ router.post('/api/logout', authMiddleware, async (req, res) => {
       // 删除 Redis 中的 token
       await redis.del(`short-url:token:${token}`);
     }
-    res.json({ message: '退出成功' });
+    response.success(res, null, '退出成功');
   } catch (err) {
     console.error('Logout error', err);
-    res.status(500).json({ error: '服务器错误' });
+    response.error(res, ErrorCode.SERVER_ERROR, '服务器错误', HttpStatus.INTERNAL_SERVER_ERROR);
   }
 });
 
 // 获取当前登录用户信息（用于前端验证 token 是否有效）
 router.get('/api/me', authMiddleware, async (req, res) => {
   try {
-    res.json({ username: req.user && req.user.username });
+    response.success(res, { username: req.user && req.user.username });
   } catch (err) {
     console.error('me error', err);
-    res.status(500).json({ error: '服务器错误' });
+    response.error(res, ErrorCode.SERVER_ERROR, '服务器错误', HttpStatus.INTERNAL_SERVER_ERROR);
   }
 });
 
 // ==================== 短链相关路由 ====================
 
 // 生成短链接(需鉴权)
-router.post('/api/urls', authMiddleware, async (request, response) => {
-  const encodedUrl = encodeURI(request.body.url);
+router.post('/api/urls', authMiddleware, async (req, res) => {
+  const encodedUrl = encodeURI(req.body.url);
   if (!/^((https|http)?:\/\/)[^\s]+/.test(encodedUrl)) {
-    return response.status(400).json({ error: 'Incorrect URL format' }).end();
+    return response.error(res, ErrorCode.PARAM_ERROR, 'Incorrect URL format');
   }
 
-  const username = request.user.username;
+  const username = req.user.username;
 
   // 检查链接数量限制
   let limit = await redis.get(`short-url:user:${username}:limit`);
@@ -153,7 +162,7 @@ router.post('/api/urls', authMiddleware, async (request, response) => {
 
   const currentCount = await redis.zCard(`short-url:user:${username}:urls`);
   if (currentCount >= parseInt(limit)) {
-    return response.status(403).json({ error: `已达到最大链接数量限制 (${limit})` });
+    return response.error(res, ErrorCode.PERMISSION_DENIED, `已达到最大链接数量限制 (${limit})`);
   }
 
   // 生成唯一的随机短链码
@@ -164,7 +173,7 @@ router.post('/api/urls', authMiddleware, async (request, response) => {
   // 将短链添加到用户的短链集合 (使用 Sorted Set 记录时间戳)
   await redis.zAdd(`short-url:user:${username}:urls`, { score: Date.now(), value: code });
 
-  response.json({ url: encodedUrl, code });
+  response.success(res, { url: encodedUrl, code });
 });
 
 // 获取当前用户的短链列表（分页，按时间倒序）
@@ -192,10 +201,10 @@ router.get('/api/urls', authMiddleware, async (req, res) => {
       }
     }
 
-    res.json({ urls, total, page, pageSize });
+    response.success(res, { urls, total, page, pageSize });
   } catch (err) {
     console.error('Get urls error', err);
-    res.status(500).json({ error: '服务器错误' });
+    response.error(res, ErrorCode.SERVER_ERROR, '服务器错误', HttpStatus.INTERNAL_SERVER_ERROR);
   }
 });
 
@@ -209,23 +218,28 @@ router.delete('/api/urls/:code', authMiddleware, async (req, res) => {
     // 验证短链是否存在
     const url = await redis.hGet(redisKey.map, code);
     if (!url) {
-      return res.status(404).json({ error: '短链不存在' });
+      return response.error(res, ErrorCode.NOT_FOUND, '短链不存在', HttpStatus.NOT_FOUND);
     }
 
     // 验证所有权
     const score = await redis.zScore(key, code);
     if (score === null) {
-      return res.status(403).json({ error: '无权删除此短链' });
+      return response.error(
+        res,
+        ErrorCode.PERMISSION_DENIED,
+        '无权删除此短链',
+        HttpStatus.FORBIDDEN
+      );
     }
 
     // 删除短链相关数据
     await redis.hDel(redisKey.map, code);
     await redis.zRem(key, code);
 
-    res.json({ message: '删除成功' });
+    response.success(res, null, '删除成功');
   } catch (err) {
     console.error('Delete url error', err);
-    res.status(500).json({ error: '服务器错误' });
+    response.error(res, ErrorCode.SERVER_ERROR, '服务器错误', HttpStatus.INTERNAL_SERVER_ERROR);
   }
 });
 

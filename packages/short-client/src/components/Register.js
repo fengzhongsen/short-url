@@ -20,7 +20,7 @@ function Register() {
         navigate('/login');
       }, 1500);
     } catch (err) {
-      setError(err.response?.data?.error || '注册失败');
+      setError(err.message || '注册失败');
     } finally {
       setLoading(false);
     }
