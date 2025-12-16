@@ -77,7 +77,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           content: [
             {
               type: 'text',
-              text: `短链接生成成功！\n短链接: ${response.data.code}\n原始链接: ${response.data.url}`,
+              text: `短链接生成成功！\n短链接: ${API_ORIGIN}/${response.data.code}\n原始链接: ${response.data.url}`,
             },
           ],
         };
