@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Typography, Space, Modal, Tabs, Input, message, Alert } from 'antd';
-import { LogoutOutlined, ApiOutlined, CopyOutlined, DownloadOutlined } from '@ant-design/icons';
+import { LogoutOutlined, ApiOutlined, CopyOutlined } from '@ant-design/icons';
 import request from '../utils/request';
 import { getOrigin } from '../utils/origin';
 
@@ -45,19 +45,52 @@ const Header = ({ showLogout = true }) => {
   // 获取当前域名，用于 MCP 配置
   const currentOrigin = getOrigin();
 
-  // MCP 配置文件内容
-  const mcpConfig = {
-    mcpServers: {
-      'short-url': {
-        command: 'node',
-        args: ['/path/to/your/mcp-server.js'],
-        env: {
-          API_URL: `${currentOrigin}/api/urls`,
-          API_KEY: apiKey || 'YOUR_API_KEY_HERE',
-        },
-      },
+  const mcpServerConfig = {
+    command: 'npx',
+    args: ['-y', 'short-mcp-server'],
+    env: {
+      API_ORIGIN: currentOrigin,
+      API_KEY: apiKey || 'YOUR_API_KEY_HERE',
     },
   };
+
+  // Claude Desktop 配置
+  const claudeConfig = {
+    mcpServers: {
+      'short-url': mcpServerConfig,
+    },
+  };
+
+  // VS Code 配置 (添加到 settings.json)
+  const vscodeConfig = {
+    'mcp.servers': {
+      'short-url': mcpServerConfig,
+    },
+  };
+
+  // MCP 配置 Tab 数据
+  const mcpTabsData = [
+    {
+      key: 'claude',
+      label: 'Claude Desktop',
+      description: (
+        <>
+          将以下配置添加到 <code>claude_desktop_config.json</code> 文件中：
+        </>
+      ),
+      config: claudeConfig,
+    },
+    {
+      key: 'vscode',
+      label: 'VS Code',
+      description: (
+        <>
+          将以下配置添加到 VS Code 的 <code>settings.json</code> 文件中：
+        </>
+      ),
+      config: vscodeConfig,
+    },
+  ];
 
   return (
     <div className="header-container">
@@ -138,37 +171,30 @@ const Header = ({ showLogout = true }) => {
               key: '2',
               label: 'MCP 配置',
               children: (
-                <Space direction="vertical" style={{ width: '100%' }}>
-                  <Paragraph>
-                    将以下配置添加到您的 MCP 客户端配置文件中（如 Claude Desktop 的{' '}
-                    <code>claude_desktop_config.json</code> 或 VS Code 的 MCP 扩展配置），即可在 AI
-                    对话中使用短链生成功能。
-                  </Paragraph>
-                  <Paragraph>
-                    <Text type="secondary">
-                      注意：您需要先下载项目根目录下的 <code>mcp-server.js</code> 文件到本地。
-                    </Text>
-                  </Paragraph>
-                  <Button
-                    icon={<DownloadOutlined />}
-                    href="/mcp-server.js"
-                    download="mcp-server.js"
-                  >
-                    下载 mcp-server.js
-                  </Button>
-                  <Input.TextArea
-                    value={JSON.stringify(mcpConfig, null, 2)}
-                    autoSize={{ minRows: 6, maxRows: 10 }}
-                    readOnly
-                    style={{ fontFamily: 'monospace', background: '#f5f5f5' }}
-                  />
-                  <Button
-                    icon={<CopyOutlined />}
-                    onClick={() => copyToClipboard(JSON.stringify(mcpConfig, null, 2))}
-                  >
-                    复制配置
-                  </Button>
-                </Space>
+                <Tabs
+                  type="card"
+                  items={mcpTabsData.map((tab) => ({
+                    key: tab.key,
+                    label: tab.label,
+                    children: (
+                      <Space direction="vertical" style={{ width: '100%' }}>
+                        <Paragraph>{tab.description}</Paragraph>
+                        <Input.TextArea
+                          value={JSON.stringify(tab.config, null, 2)}
+                          autoSize={{ minRows: 6, maxRows: 10 }}
+                          readOnly
+                          style={{ fontFamily: 'monospace', background: '#f5f5f5' }}
+                        />
+                        <Button
+                          icon={<CopyOutlined />}
+                          onClick={() => copyToClipboard(JSON.stringify(tab.config, null, 2))}
+                        >
+                          复制配置
+                        </Button>
+                      </Space>
+                    ),
+                  }))}
+                />
               ),
             },
           ]}

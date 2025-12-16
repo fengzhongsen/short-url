@@ -9,7 +9,8 @@
     "start:client": "npm start -w short-client",
     "start:server": "npm run dev -w short-server",
     "build:client": "npm run build -w short-client",
-    "start": "concurrently \"npm run start:server\" \"npm run start:client\""
+    "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
+    "release:mcp": "cd packages/short-mcp-server && npm version patch && npm publish --access public && git push --follow-tags"
   },
   "devDependencies": {
     "concurrently": "^7.6.0"

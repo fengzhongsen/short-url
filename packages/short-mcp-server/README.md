@@ -22,7 +22,7 @@ Add the following configuration to your `claude_desktop_config.json`:
       "command": "npx",
       "args": ["-y", "short-mcp-server"],
       "env": {
-        "API_URL": "YOUR_API_URL",
+        "API_ORIGIN": "YOUR_API_ORIGIN",
         "API_KEY": "YOUR_API_KEY_HERE"
       }
     }
@@ -31,11 +31,11 @@ Add the following configuration to your `claude_desktop_config.json`:
 ```
 
 Replace `YOUR_API_KEY_HERE` with your actual API key generated from the Short URL service dashboard.
-If you are hosting the service yourself, replace `YOUR_API_URL` with your own API endpoint (e.g., `http://localhost:3001/api/urls`).
+If you are hosting the service yourself, replace `YOUR_API_ORIGIN` with your own API origin (e.g., `http://localhost:3001`).
 
 ## Environment Variables
 
-- `API_URL`: The API endpoint for creating short URLs (default: `http://localhost:3001/api/urls`).
+- `API_ORIGIN`: The API origin for creating short URLs (default: `http://localhost:3001`).
 - `API_KEY`: (Required) Your API Key for authentication.
 
 ## License
