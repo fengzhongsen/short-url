@@ -63,7 +63,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       // 调用后端 API
       const response = await axios.post(
         API_URL,
-        { originUrl: url },
+        { url },
         {
           headers: {
             Authorization: `Bearer ${API_KEY}`,
