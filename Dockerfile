@@ -19,6 +19,13 @@ RUN npm install
 # 复制所有源代码
 COPY . .
 
+# 禁用 source map 以节省内存
+ENV GENERATE_SOURCEMAP=false
+# 适配 2G 内存服务器，设置内存上限为 1536MB (预留部分给系统)
+ENV NODE_OPTIONS="--max-old-space-size=1536"
+# 设置 CI=true，在某些构建工具（如 Jest）中会强制单线程，且让警告变成错误，适合生产构建
+ENV CI=true
+
 # 构建前端
 RUN npm run build:client
 
