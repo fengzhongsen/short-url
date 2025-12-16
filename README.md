@@ -91,7 +91,7 @@ npm run start:client
 ### 方式一：Docker 部署 (推荐)
 
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 ### 方式二：手动部署
@@ -106,3 +106,47 @@ npm run build:client
 # 启动后端服务 (会自动托管前端构建产物)
 npm run start:server
 ```
+
+## MCP 服务集成
+
+本项目提供了 MCP (Model Context Protocol) Server，允许 AI 助手（如 Claude Desktop, VS Code + Cline 等）直接调用你的短链服务生成短链接。
+
+### Claude Desktop 配置
+
+编辑 `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "short-url": {
+      "command": "npx",
+      "args": ["-y", "short-mcp-server"],
+      "env": {
+        "API_ORIGIN": "http://localhost:3001",
+        "API_KEY": "YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
+
+### VS Code 配置
+
+编辑 VS Code `settings.json`:
+
+```json
+{
+  "mcp.servers": {
+    "short-url": {
+      "command": "npx",
+      "args": ["-y", "short-mcp-server"],
+      "env": {
+        "API_ORIGIN": "http://localhost:3001",
+        "API_KEY": "YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
+
+> 注意：请将 `YOUR_API_KEY` 替换为你登录系统后生成的 API Key。如果部署在公网，请将 `API_ORIGIN` 替换为实际域名。
