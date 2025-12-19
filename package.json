@@ -7,9 +7,10 @@
   ],
   "scripts": {
     "start:client": "npm start -w short-client",
-    "start:server": "npm run dev -w short-server",
+    "dev:server": "npm run dev -w short-server",
     "build:client": "npm run build -w short-client",
-    "start": "concurrently \"npm run start:server\" \"npm run start:client\""
+    "dev": "concurrently \"npm run dev:server\" \"npm run start:client\"",
+    "start": "npm run start -w short-server"
   },
   "devDependencies": {
     "concurrently": "^7.6.0"
