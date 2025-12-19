@@ -101,10 +101,10 @@ docker compose up -d --build
 npm install
 
 # 构建前端静态资源
-npm run build:client
+npm run build
 
 # 启动后端服务 (会自动托管前端构建产物)
-npm run start:server
+npm run server
 ```
 
 ## MCP 服务集成
